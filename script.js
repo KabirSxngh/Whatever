@@ -155,8 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!targetCell || targetCell.classList.contains('empty-day') || isLongPress) return;
         
         const dateStr = targetCell.dataset.date;
-        
-        // --- Our secret love letter! ---
+    
         if (dateStr.endsWith('-10-28')) {
             triggerConfettiShower();
         }
