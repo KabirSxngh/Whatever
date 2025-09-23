@@ -41,13 +41,11 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     opacity: 0;
 }
 .settings-panel.show { max-height: 800px; opacity: 1; padding: 1.5rem; }
-
-/* FIX: Re-implementing robust flexbox layout for settings groups */
 .settings-group { 
     margin-bottom: 1.5rem; 
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Default for most groups */
+    align-items: flex-start;
 }
 .settings-group label { display: block; margin-bottom: 0.5rem; font-weight: 300; }
 input[type="date"], input[type="text"], input[type="range"] {
@@ -59,7 +57,7 @@ input[type="date"] { display: flex; align-items: center; }
     list-style: none; 
     margin-bottom: 1rem; 
     width: 100%; 
-    align-self: stretch; /* FIX: This makes it full-width */
+    align-self: stretch;
 }
 #tag-list li {
     display: flex; justify-content: space-between; align-items: center;
@@ -81,7 +79,6 @@ input[type="date"] { display: flex; align-items: center; }
 
 input[type="range"] { cursor: pointer; }
 
-/* FIX: Specific alignment for the toggle switch group */
 .toggle-group { 
     flex-direction: row; 
     justify-content: space-between; 
@@ -135,6 +132,17 @@ button.secondary { background-color: transparent; border: 1px solid var(--border
     border-color: var(--accent-color);
 }
 .date-cell.today .date-number { font-weight: bold; }
+
+/* NEW: Style for out-of-range dates */
+.date-cell.disabled {
+    opacity: 0.35;
+    pointer-events: none; /* This makes it non-interactive */
+    box-shadow: none;
+}
+.date-cell.disabled:hover {
+    transform: none;
+    background-color: rgba(0,0,0,0.1);
+}
 
 .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0.3s ease; }
 .modal-backdrop.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
