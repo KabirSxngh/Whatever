@@ -1,48 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Looping GIF Background</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: black;
-    }
-
-    .gif-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-      color: white;
-      font-size: 2rem;
-      text-align: center;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphic Date Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <img class="gif-background" src="your-gif.gif" alt="Looping GIF" />
-  <div class="content">
-    "Hi <3"
-  </div>
+
+    <div class="main-container">
+        <header>
+            <h1>Date Planner</h1>
+            <div class="settings-toggle" id="settings-toggle" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M19.48 12.65a8.23 8.23 0 0 0-.34-1.28l1.45-1.45a1 1 0 0 0 0-1.41l-1.42-1.42a1 1 0 0 0-1.41 0l-1.45 1.45a8.23 8.23 0 0 0-1.28-.34l-.45-1.85A1 1 0 0 0 13.25 4h-2.5a1 1 0 0 0-.93.65l-.45 1.85a8.23 8.23 0 0 0-1.28.34l-1.45-1.45a1 1 0 0 0-1.41 0L3.81 6.81a1 1 0 0 0 0 1.41l1.45 1.45c-.15.42-.28.85-.34 1.28l-1.85.45a1 1 0 0 0-.65.93v2.5a1 1 0 0 0 .65.93l1.85.45c.06.43.19.86.34 1.28l-1.45 1.45a1 1 0 0 0 0 1.41l1.42 1.42a1 1 0 0 0 1.41 0l1.45-1.45c.42.15.85.28 1.28.34l.45 1.85a1 1 0 0 0 .93.65h2.5a1 1 0 0 0 .93-.65l.45-1.85c.43-.06.86-.19 1.28-.34l1.45 1.45a1 1 0 0 0 1.41 0l1.42-1.42a1 1 0 0 0 0-1.41l-1.45-1.45c.15-.42.28-.85-.34-1.28l1.85-.45a1 1 0 0 0 .65-.93v-2.5a1 1 0 0 0-.65-.93l-1.85-.45zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+                </svg>
+            </div>
+        </header>
+
+        <div class="settings-panel glassmorphic" id="settings-panel">
+            <h3>Settings</h3>
+            <div class="settings-group">
+                <label for="start-date">Start Date</label>
+                <input type="date" id="start-date">
+            </div>
+            <div class="settings-group">
+                <label for="end-date">End Date</label>
+                <input type="date" id="end-date">
+            </div>
+
+            <div class="settings-group">
+                <label>Manage Tags</label>
+                <ul id="tag-list"></ul>
+                <div class="add-tag-form">
+                    <input type="text" id="new-tag-name" placeholder="Tag Name">
+                    <input type="color" id="new-tag-color" value="#3498db">
+                    <button id="add-tag-btn">Add Tag</button>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="generate-btn">Generate Calendar</button>
+                <button id="random-theme-btn" class="secondary">Randomize Theme</button>
+            </div>
+        </div>
+
+        <div id="calendar-container">
+            </div>
+    </div>
+
+    <div id="tag-modal" class="modal-backdrop hidden">
+        <div class="modal-content glassmorphic">
+            <h4>Add a note to this date</h4>
+            <input type="text" id="custom-tag-input" placeholder="e.g., 'Project Deadline'">
+            <div class="modal-actions">
+                <button id="save-tag-btn">Save</button>
+                <button id="cancel-tag-btn" class="secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
