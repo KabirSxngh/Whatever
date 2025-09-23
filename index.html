@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -16,7 +18,7 @@
             <h1>Date Planner</h1>
             <div class="settings-toggle" id="settings-toggle" title="Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path d="M19.48 12.65a8.23 8.23 0 0 0-.34-1.28l1.45-1.45a1 1 0 0 0 0-1.41l-1.42-1.42a1 1 0 0 0-1.41 0l-1.45 1.45a8.23 8.23 0 0 0-1.28-.34l-.45-1.85A1 1 0 0 0 13.25 4h-2.5a1 1 0 0 0-.93.65l-.45 1.85a8.23 8.23 0 0 0-1.28.34l-1.45-1.45a1 1 0 0 0-1.41 0L3.81 6.81a1 1 0 0 0 0 1.41l1.45 1.45c-.15.42-.28.85-.34 1.28l-1.85.45a1 1 0 0 0-.65.93v2.5a1 1 0 0 0 .65.93l1.85.45c.06.43.19.86.34 1.28l-1.45 1.45a1 1 0 0 0 0 1.41l1.42 1.42a1 1 0 0 0 1.41 0l1.45-1.45c.42.15.85.28 1.28.34l.45 1.85a1 1 0 0 0 .93.65h2.5a1 1 0 0 0 .93-.65l.45-1.85c.43-.06.86-.19 1.28-.34l1.45 1.45a1 1 0 0 0 1.41 0l1.42-1.42a1 1 0 0 0 0-1.41l-1.45-1.45c.15-.42.28-.85-.34-1.28l1.85-.45a1 1 0 0 0 .65-.93v-2.5a1 1 0 0 0-.65-.93l-1.85-.45zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+                    <path d="M19.48 12.65a8.23 8.23 0 0 0-.34-1.28l1.45-1.45a1 1 0 0 0 0-1.41l-1.42-1.42a1 1 0 0 0-1.41 0l-1.45 1.45a8.23 8.23 0 0 0-1.28-.34l-.45-1.85A1 1 0 0 0 13.25 4h-2.5a1 1 0 0 0-.93.65l-.45 1.85a8.23 8.23 0 0 0-1.28-.34l-1.45-1.45a1 1 0 0 0-1.41 0L3.81 6.81a1 1 0 0 0 0 1.41l1.45 1.45c-.15.42-.28.85-.34 1.28l-1.85.45a1 1 0 0 0-.65.93v2.5a1 1 0 0 0 .65.93l1.85.45c.06.43.19.86.34 1.28l-1.45 1.45a1 1 0 0 0 0 1.41l1.42 1.42a1 1 0 0 0 1.41 0l1.45-1.45c.42.15.85.28 1.28.34l.45 1.85a1 1 0 0 0 .93.65h2.5a1 1 0 0 0 .93-.65l.45-1.85c.43-.06.86-.19 1.28-.34l1.45 1.45a1 1 0 0 0 1.41 0l1.42-1.42a1 1 0 0 0 0-1.41l-1.45-1.45c.15-.42.28-.85-.34-1.28l1.85-.45a1 1 0 0 0 .65-.93v-2.5a1 1 0 0 0-.65-.93l-1.85-.45zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
                 </svg>
             </div>
         </header>
@@ -42,9 +44,23 @@
                 </div>
             </div>
             
+            <div class="settings-group">
+                <label for="grid-size-slider">Months per Row (<span id="grid-size-value">3</span>)</label>
+                <input type="range" id="grid-size-slider" min="1" max="6" value="3">
+            </div>
+
+            <div class="settings-group toggle-group">
+                <label for="counter-toggle">Show Tag Counter</label>
+                <label class="switch">
+                    <input type="checkbox" id="counter-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
             <div class="button-group">
                 <button id="generate-btn">Generate Calendar</button>
                 <button id="random-theme-btn" class="secondary">Randomize Theme</button>
+                <button id="download-btn" class="secondary">Download as PNG</button>
             </div>
         </div>
 
@@ -62,6 +78,9 @@
             </div>
         </div>
     </div>
+
+    <div id="counter-bar" class="glassmorphic">
+        </div>
 
     <script src="script.js"></script>
 </body>
