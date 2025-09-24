@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements (same as before)
+    // DOM Elements
     const settingsToggle = document.getElementById('settings-toggle');
     const settingsPanel = document.getElementById('settings-panel');
     const startDateInput = document.getElementById('start-date');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridSizeSlider = document.getElementById('grid-size-slider');
     const gridSizeValue = document.getElementById('grid-size-value');
 
-    // State (same as before)
+    // State
     let tags = [];
     let dateData = {};
     let longPressTimer;
@@ -40,67 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
         bindEvents();
         generateCalendar();
     }
-
-    // UPDATED: createMonthGrid function has the new logic
-    function createMonthGrid(year, month) {
-        // Get the start and end dates from the inputs for comparison
+    
+    // --- THIS IS THE CORRECTED FUNCTION ---
+    function generateCalendar() {
+        calendarContainer.innerHTML = '';
         const startDate = new Date(startDateInput.value);
-        startDate.setUTCHours(0, 0, 0, 0);
         const endDate = new Date(endDateInput.value);
+        if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
+            calendarContainer.innerHTML = '<div class="error-message glassmorphic">Invalid date range. Please select a start date that is before the end date.</div>';
+            return;
+        }
+        
+        startDate.setUTCHours(0, 0, 0, 0);
         endDate.setUTCHours(0, 0, 0, 0);
+        
+        // THE FIX: Start the loop from the 1st day of the start month.
+        let currentDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), 1));
 
-        const monthContainer = document.createElement('div');
-        monthContainer.className = 'month-grid glassmorphic';
-        const monthName = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
-        monthContainer.innerHTML = `<h3 class="month-header">${monthName}</h3>`;
-        const calendarGrid = document.createElement('div');
-        calendarGrid.className = 'calendar';
-        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-            const dayNameEl = document.createElement('div');
-            dayNameEl.className = 'day-name';
-            dayNameEl.textContent = day;
-            calendarGrid.appendChild(dayNameEl);
-        });
-
-        const firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay();
-        const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-        for (let i = 0; i < firstDay; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.className = 'date-cell empty-day';
-            calendarGrid.appendChild(emptyCell);
+        while (currentDate <= endDate) {
+            createMonthGrid(currentDate.getUTCFullYear(), currentDate.getUTCMonth());
+            // This is now safe because currentDate is always the 1st.
+            currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
         }
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dateCell = document.createElement('div');
-            dateCell.className = 'date-cell';
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            dateCell.dataset.date = dateStr;
-
-            // --- THIS IS THE FIX ---
-            const currentCellDate = new Date(dateStr);
-            currentCellDate.setUTCHours(0, 0, 0, 0);
-            if (currentCellDate < startDate || currentCellDate > endDate) {
-                dateCell.classList.add('disabled');
-            }
-            // --- End of Fix ---
-
-            if (dateStr === todayString) { dateCell.classList.add('today'); }
-            dateCell.innerHTML = `<span class="date-number">${day}</span>`;
-            if (dateData[dateStr]) {
-                const tagData = dateData[dateStr];
-                if(tagData.color) { dateCell.style.backgroundColor = tagData.color; dateCell.dataset.currentTag = tagData.name; }
-                if(tagData.customText) { dateCell.innerHTML += `<span class="date-tag">${tagData.customText}</span>`; }
-            }
-            calendarGrid.appendChild(dateCell);
-        }
-        monthContainer.appendChild(calendarGrid);
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'month-grid-wrapper';
-        wrapper.appendChild(monthContainer);
-        calendarContainer.appendChild(wrapper);
+        updateCounter();
     }
 
-    // --- (The rest of the script is unchanged) ---
+
+    // --- (The rest of the script is unchanged from the last complete version) ---
     function saveState() { try { localStorage.setItem('plannerTags', JSON.stringify(tags)); localStorage.setItem('plannerDateData', JSON.stringify(dateData)); localStorage.setItem('plannerCounterVisible', counterToggle.checked); localStorage.setItem('plannerGridColumns', gridSizeSlider.value); } catch (e) { console.error("Failed to save state:", e); } }
     function loadState() { const savedTags = localStorage.getItem('plannerTags'); const savedDateData = localStorage.getItem('plannerDateData'); const counterVisible = localStorage.getItem('plannerCounterVisible'); const savedGridColumns = localStorage.getItem('plannerGridColumns'); tags = savedTags ? JSON.parse(savedTags) : [ { name: 'Holiday', color: '#e74c3c' }, { name: 'Absent', color: '#f1c40f' } ]; dateData = savedDateData ? JSON.parse(savedDateData) : {}; counterToggle.checked = counterVisible !== null ? JSON.parse(counterVisible) : true; if (savedGridColumns) { gridSizeSlider.value = savedGridColumns; gridSizeValue.textContent = savedGridColumns; calendarContainer.style.gridTemplateColumns = `repeat(${savedGridColumns}, 1fr)`; } updateCounterVisibility(); }
     function setDefaultDates() { const twoMonthsLater = new Date(localToday); twoMonthsLater.setMonth(localToday.getMonth() + 2); startDateInput.value = todayString; endDateInput.value = twoMonthsLater.toISOString().split('T')[0]; }
@@ -112,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTags() { tagList.innerHTML = ''; tags.forEach(tag => { const li = document.createElement('li'); li.innerHTML = `<div class="tag-item-content"><div class="tag-color-swatch" style="background-color: ${tag.color};"></div>${tag.name}</div><span class="delete-tag-btn" data-tag-name="${tag.name}" title="Delete Tag">&times;</span>`; tagList.appendChild(li); }); }
     function addTag() { const name = newTagNameInput.value.trim(); const color = newTagColorInput.value; if (name && !tags.some(t => t.name.toLowerCase() === name.toLowerCase())) { tags.push({ name, color }); renderTags(); updateCounter(); saveState(); newTagNameInput.value = ''; } else if (!name) { alert('Please enter a tag name.'); } else { alert('This tag name already exists.'); } }
     function handleTagListClick(e) { if (e.target.classList.contains('delete-tag-btn')) { const tagName = e.target.dataset.tagName; if (confirm(`Are you sure you want to delete the "${tagName}" tag?`)) { tags = tags.filter(tag => tag.name !== tagName); Object.keys(dateData).forEach(date => { if (dateData[date].name === tagName) { delete dateData[date].name; delete dateData[date].color; if (Object.keys(dateData[date]).length === 0) delete dateData[date]; } }); renderTags(); generateCalendar(); saveState(); } } }
-    function generateCalendar() { calendarContainer.innerHTML = ''; const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) { calendarContainer.innerHTML = '<div class="error-message glassmorphic">Invalid date range. Please select a start date that is before the end date.</div>'; return; } startDate.setUTCHours(0, 0, 0, 0); endDate.setUTCHours(0, 0, 0, 0); let currentDate = new Date(startDate); while (currentDate <= endDate) { createMonthGrid(currentDate.getUTCFullYear(), currentDate.getUTCMonth()); currentDate.setUTCMonth(currentDate.getUTCMonth() + 1); } updateCounter(); }
+    function createMonthGrid(year, month) { const startDate = new Date(startDateInput.value); startDate.setUTCHours(0, 0, 0, 0); const endDate = new Date(endDateInput.value); endDate.setUTCHours(0, 0, 0, 0); const monthContainer = document.createElement('div'); monthContainer.className = 'month-grid glassmorphic'; const monthName = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' }); monthContainer.innerHTML = `<h3 class="month-header">${monthName}</h3>`; const calendarGrid = document.createElement('div'); calendarGrid.className = 'calendar'; ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => { const dayNameEl = document.createElement('div'); dayNameEl.className = 'day-name'; dayNameEl.textContent = day; calendarGrid.appendChild(dayNameEl); }); const firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay(); const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate(); for (let i = 0; i < firstDay; i++) { const emptyCell = document.createElement('div'); emptyCell.className = 'date-cell empty-day'; calendarGrid.appendChild(emptyCell); } for (let day = 1; day <= daysInMonth; day++) { const dateCell = document.createElement('div'); dateCell.className = 'date-cell'; const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; dateCell.dataset.date = dateStr; const currentCellDate = new Date(dateStr); currentCellDate.setUTCHours(0, 0, 0, 0); if (currentCellDate < startDate || currentCellDate > endDate) { dateCell.classList.add('disabled'); } if (dateStr === todayString) { dateCell.classList.add('today'); } dateCell.innerHTML = `<span class="date-number">${day}</span>`; if (dateData[dateStr]) { const tagData = dateData[dateStr]; if(tagData.color) { dateCell.style.backgroundColor = tagData.color; dateCell.dataset.currentTag = tagData.name; } if(tagData.customText) { dateCell.innerHTML += `<span class="date-tag">${tagData.customText}</span>`; } } calendarGrid.appendChild(dateCell); } monthContainer.appendChild(calendarGrid); const wrapper = document.createElement('div'); wrapper.className = 'month-grid-wrapper'; wrapper.appendChild(monthContainer); calendarContainer.appendChild(wrapper); }
     function handleDateMouseDown(e) { targetCell = e.target.closest('.date-cell'); if (!targetCell || targetCell.classList.contains('empty-day') || targetCell.classList.contains('disabled')) return; isLongPress = false; longPressTimer = setTimeout(() => { isLongPress = true; showModal(targetCell); }, 700); }
     function handleDateMouseUp() { clearTimeout(longPressTimer); }
     function handleDateClick(e) { targetCell = e.target.closest('.date-cell'); if (!targetCell || targetCell.classList.contains('empty-day') || targetCell.classList.contains('disabled') || isLongPress) return; const dateStr = targetCell.dataset.date; if (dateStr.endsWith('-10-28')) { triggerConfettiShower(); } const currentTagName = targetCell.dataset.currentTag; const currentIndex = tags.findIndex(tag => tag.name === currentTagName); const nextIndex = currentIndex + 1; if (nextIndex < tags.length) { const nextTag = tags[nextIndex]; targetCell.style.backgroundColor = nextTag.color; targetCell.dataset.currentTag = nextTag.name; dateData[dateStr] = { ...(dateData[dateStr] || {}), color: nextTag.color, name: nextTag.name }; } else { targetCell.style.backgroundColor = ''; targetCell.removeAttribute('data-current-tag'); if (dateData[dateStr]) { delete dateData[dateStr].color; delete dateData[dateStr].name; if (Object.keys(dateData[dateStr]).length === 0) delete dateData[dateStr]; } } updateCounter(); saveState(); }
@@ -123,3 +89,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     init();
 });
+                                                                                         
