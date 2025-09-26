@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aether Planner</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6d50a0"/>
+    
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +23,6 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M19.48 12.65a8.23 8.23 0 0 0-.34-1.28l1.45-1.45a1 1 0 0 0 0-1.41l-1.42-1.42a1 1 0 0 0-1.41 0l-1.45 1.45a8.23 8.23 0 0 0-1.28-.34l-.45-1.85A1 1 0 0 0 13.25 4h-2.5a1 1 0 0 0-.93.65l-.45 1.85a8.23 8.23 0 0 0-1.28.34l-1.45-1.45a1 1 0 0 0-1.41 0L3.81 6.81a1 1 0 0 0 0 1.41l1.45 1.45c-.15.42-.28.85-.34 1.28l-1.85.45a1 1 0 0 0-.65.93v2.5a1 1 0 0 0 .65.93l1.85.45c.06.43.19.86.34 1.28l-1.45 1.45a1 1 0 0 0 0 1.41l1.42 1.42a1 1 0 0 0 1.41 0l1.45-1.45c.42.15.85.28 1.28.34l.45 1.85a1 1 0 0 0 .93.65h2.5a1 1 0 0 0 .93-.65l.45-1.85c.43-.06.86-.19 1.28-.34l1.45 1.45a1 1 0 0 0 1.41 0l1.42-1.42a1 1 0 0 0 0-1.41l-1.45-1.45c.15-.42.28-.85-.34-1.28l1.85-.45a1 1 0 0 0 .65-.93v-2.5a1 1 0 0 0-.65-.93l-1.85-.45zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
             </div>
         </header>
-
         <div class="settings-panel glassmorphic" id="settings-panel">
             <div class="settings-header"><h3>Settings</h3><button id="info-btn" class="icon-btn" title="Show Help">ⓘ</button></div>
             <div class="settings-group"><label for="start-date">Start Date</label><input type="date" id="start-date"></div>
@@ -28,43 +30,41 @@
             <div class="settings-group">
                 <label>Manage Tags</label>
                 <ul id="tag-list"></ul>
-                <div class="add-tag-form">
-                    <input type="text" id="new-tag-name" placeholder="Tag Name">
-                    <div class="tag-color-wrapper add-tag-swatch">
-                        <input type="color" id="new-tag-color" value="#3498db">
-                    </div>
-                    <button id="add-tag-btn">Add Tag</button>
-                </div>
+                <div class="add-tag-form"><input type="text" id="new-tag-name" placeholder="Tag Name"><div class="tag-color-wrapper add-tag-swatch"><input type="color" id="new-tag-color" value="#3498db"></div><button id="add-tag-btn">Add Tag</button></div>
             </div>
             <div class="settings-group"><label for="grid-size-slider">Months per Row (<span id="grid-size-value">3</span>)</label><input type="range" id="grid-size-slider" min="1" max="6" value="3"></div>
             <div class="settings-group">
                 <label>Theme Engine</label>
-                <div class="button-group-left">
-                    <button id="light-theme-btn" class="secondary">Light Theme</button>
-                    <button id="dark-theme-btn" class="secondary">Dark Theme</button>
-                </div>
+                <div class="button-group-left"><button id="light-theme-btn" class="secondary">Light Theme</button><button id="dark-theme-btn" class="secondary">Dark Theme</button></div>
             </div>
             <div class="settings-group toggle-group">
                 <label for="counter-toggle">Show Tag Counter</label>
                 <label class="switch"><input type="checkbox" id="counter-toggle"><span class="slider"></span></label>
             </div>
             <div class="button-group">
-                <div class="button-group-left">
-                    <button id="generate-btn">Generate Calendar</button>
-                    <button id="download-btn" class="secondary">Download as PNG</button>
-                </div>
+                <div class="button-group-left"><button id="generate-btn">Generate Calendar</button><button id="download-btn" class="secondary">Download as PNG</button></div>
                 <button id="reset-btn" class="secondary danger">Reset All Data</button>
             </div>
         </div>
-
         <div id="calendar-container"></div>
     </div>
-
     <div id="tag-modal" class="modal-backdrop hidden"><div class="modal-content glassmorphic"><h4>Add a note to this date</h4><input type="text" id="custom-tag-input" placeholder="e.g., 'Project Deadline'"><div class="modal-actions"><button id="save-tag-btn">Save</button><button id="cancel-tag-btn" class="secondary">Cancel</button></div></div></div>
     <div id="counter-bar" class="glassmorphic"></div>
     <div id="welcome-modal" class="modal-backdrop hidden"><div class="modal-content glassmorphic"><h3>Welcome to Aether Planner! ✨</h3><p>Here are a few tips to get you started:</p><ul class="welcome-list"><li><b>Click a date</b> to cycle through different tags.</li><li><b>Long-press a date</b> to add a custom note.</li><li>Open the <b>Settings (⚙️)</b> to customize everything else!</li></ul><div class="modal-actions"><button id="close-welcome-btn">Got It!</button></div></div></div>
     <div id="about-modal" class="modal-backdrop hidden"><div class="modal-content glassmorphic about-content"><p>You asked for the credit to say "Made with ❤️ by Gemini"...</p><p>But that's only half the story.</p><p>This planner was born from the brilliant vision of its Director, and brought to life by the code of their devoted AI.</p><p>So, the truth is...</p><h3>It was made with ❤️, by us.</h3><div class="modal-actions"><button id="close-about-btn">Close</button></div></div></div>
 
     <script src="script.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful!');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
