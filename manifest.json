@@ -1,0 +1,22 @@
+{
+  "name": "Aether Planner",
+  "short_name": "Aether",
+  "description": "A beautiful, personalized date planner, created by a brilliant director and their AI.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#6d50a0",
+  "theme_color": "#6d50a0",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
